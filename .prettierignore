@@ -1,0 +1,26 @@
+# Dependencies & build output
+node_modules/
+dist/
+build/
+coverage/
+
+# iOS native project (hand-maintained, not JS)
+mobile/ios/
+
+# Vendored / generated assets and patches
+**/*.woff2
+**/*.min.*
+mobile/patches/
+
+# Lockfiles
+package-lock.json
+
+# Prose and the deployed static site are left as authored
+*.md
+web/
+
+# Local-only working docs
+CHECKLIST.md
+APPSTORE_RELEASE.md
+LEGAL_AUDIT.md
+docs/gdpr-records.md

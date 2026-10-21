@@ -1,0 +1,13 @@
+{
+  "name": "UpVital",
+  "short_name": "UpVital",
+  "description": "Your Apple Health data, turned into a daily longevity snapshot.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#080A09",
+  "theme_color": "#0C6B3C",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

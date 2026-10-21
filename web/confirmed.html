@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0C6B3C">
+<title>Email confirmed - UpVital</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2316A34A'/%3E%3Cpath d='M6 17h4l3-8 4 14 3-8h6' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<style>
+  :root{ --bg:#080A09; --surface:#131817; --ink:#F1F5F3; --ink-2:#9DA7A2; --ink-3:#838D88; --border:rgba(255,255,255,.09); color-scheme:dark; }
+  html,body{margin:0}
+  body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,'Segoe UI',sans-serif}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:0 1px 2px rgba(12,18,16,.06),0 12px 32px -12px rgba(12,18,16,.18);max-width:420px;width:100%;padding:36px 28px;text-align:center}
+  .check{width:60px;height:60px;margin:0 auto 18px;border-radius:50%;background:#16A34A;color:#fff;font-size:32px;line-height:60px;font-weight:700}
+  h1{font-size:1.5rem;margin:0 0 10px}
+  p{color:var(--ink-2);margin:0 0 22px;line-height:1.55}
+  .btn{display:inline-block;background:#12854A;color:#fff;text-decoration:none;font-weight:600;padding:13px 30px;border-radius:12px}
+  .hint{font-size:.85rem;color:var(--ink-3);margin:20px 0 0}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="check" aria-hidden="true">&#10003;</div>
+    <h1>Email confirmed</h1>
+    <p>Your email is verified. Open UpVital and log in to get started.</p>
+    <a class="btn" href="upvital://">Open UpVital</a>
+    <p class="hint">If the app doesn't open automatically, launch UpVital from your Home Screen and log in.</p>
+  </div>
+  <script>
+    // Strip any auth tokens the sign-in service may append so they don't linger in the address bar / history.
+    try{ if(location.hash || location.search){ history.replaceState({}, document.title, location.pathname); } }catch(e){}
+  </script>
+</body>
+</html>

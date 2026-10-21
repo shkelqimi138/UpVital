@@ -1,0 +1,93 @@
+# =====================================================================
+# UpVital — .gitignore
+# Monorepo: mobile/ (Expo/React Native iOS), backend/ (Express/TS), web/ (static).
+# Rule of thumb: never commit secrets or generated build output.
+# Patterns are un-anchored so they match in every workspace.
+# =====================================================================
+
+# ---------- Secrets & local env (NEVER commit) ----------
+# backend/.env holds real server secrets; mobile/.env holds EXPO_PUBLIC_* (public,
+# but ignored for hygiene). The committed *.env.example files document the vars.
+.env
+.env.*
+!.env.example
+# Signing material & keys
+*.pem
+*.p8
+*.p12
+*.key
+*.keystore
+*.mobileprovision
+*.cer
+*.certSigningRequest
+
+# ---------- Dependencies ----------
+node_modules/
+.pnp
+.pnp.js
+
+# ---------- JS / TS build output ----------
+dist/
+build/
+web-build/
+coverage/
+*.tsbuildinfo
+
+# ---------- Expo / Metro ----------
+.expo/
+.expo-shared/
+.metro-health-check*
+
+# ---------- iOS: CocoaPods + Xcode ----------
+# Keep ios/ SOURCE (Info.plist, *.xcodeproj, Podfile, Podfile.lock, .xcode.env).
+# Ignore everything generated, including the custom build_*/ archive dirs (~GBs).
+Pods/
+build_*/
+DerivedData/
+*.xcarchive
+*.ipa
+*.dSYM
+*.dSYM.zip
+xcuserdata/
+*.xcuserstate
+# Xcode's machine-local Node path (the tracked .xcode.env stays)
+.xcode.env.local
+
+# ---------- Logs ----------
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ---------- Caches ----------
+.cache/
+.eslintcache
+.prettiercache
+
+# ---------- Deploy (web / infra) ----------
+.vercel
+.netlify
+.wrangler/
+
+# ---------- OS cruft ----------
+.DS_Store
+Thumbs.db
+
+# ---------- Editor / IDE ----------
+.vscode/
+.idea/
+*.swp
+*~
+
+# ---------- Local tooling & AI-agent files (not public) ----------
+.claude/settings.local.json
+.claude/scratch/
+claude-memory/
+/RESTORE.md
+
+# ---------- Local-only working docs (kept on disk, out of the public repo) ----------
+/CHECKLIST.md
+/APPSTORE_RELEASE.md
+/LEGAL_AUDIT.md
+/docs/gdpr-records.md

@@ -1,0 +1,23 @@
+<!-- Supabase Auth → Email Templates → "Confirm signup"
+     Recommended subject: Confirm your UpVital email
+     Variables: {{ .ConfirmationURL }} (used), {{ .Token }}, {{ .Email }} -->
+<div style="margin:0;padding:0;background:#f5f5f5;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#1a1a1a;">
+  <div style="max-width:520px;margin:0 auto;padding:32px 24px;">
+    <div style="font-size:20px;font-weight:700;color:#16A34A;margin-bottom:24px;">UpVital</div>
+    <div style="background:#ffffff;border-radius:12px;padding:28px 24px;">
+      <p style="margin:0 0 16px;font-size:18px;font-weight:600;">Confirm your email</p>
+      <p style="margin:0 0 20px;font-size:15px;line-height:22px;">
+        Welcome to UpVital! Tap the button below to confirm your email address and activate your account.
+      </p>
+      <p style="margin:0;">
+        <a href="{{ .ConfirmationURL }}"
+           style="display:inline-block;background:#16A34A;color:#ffffff;text-decoration:none;font-size:15px;font-weight:600;padding:12px 22px;border-radius:8px;">
+          Confirm email
+        </a>
+      </p>
+    </div>
+    <p style="margin:20px 0 0;font-size:12px;color:#999;text-align:center;">
+      If you didn't create an UpVital account, you can safely ignore this email.
+    </p>
+  </div>
+</div>

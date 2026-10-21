@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+
+# Secrets — EXPO_PUBLIC_* still get inlined into the bundle, but the file itself
+# must never be committed.
+.env
+.env.*
+!.env.example
+
+# Native build artifacts only. The checked-in ios/ project (incl. hand-edited
+# entitlements) is intentionally kept — just its generated build dirs are ignored.
+ios/Pods/
+ios/build/
+
+# Metro / Expo caches
+.metro-health-check*
+
+# Misc
+*.log
+.DS_Store

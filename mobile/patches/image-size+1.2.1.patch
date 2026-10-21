@@ -1,0 +1,57 @@
+diff --git a/node_modules/image-size/dist/types/icns.js b/node_modules/image-size/dist/types/icns.js
+index f2bfafe..a73e448 100644
+--- a/node_modules/image-size/dist/types/icns.js
++++ b/node_modules/image-size/dist/types/icns.js
+@@ -21,6 +21,9 @@ const FILE_LENGTH_OFFSET = 4; // MSB => BIG ENDIAN
+  * | 8      | n    | Icon data                                                        |
+  */
+ const ENTRY_LENGTH_OFFSET = 4; // MSB => BIG ENDIAN
++// PATCHED (patch-package) — minimum bytes an image entry occupies: 4-byte type + 4-byte length.
++// Used to guarantee forward progress in calculate(); see the note there.
++const ENTRY_HEADER_SIZE = 8;
+ const ICON_TYPE_SIZE = {
+     ICON: 32,
+     'ICN#': 32,
+@@ -93,7 +96,12 @@ exports.ICNS = {
+         while (imageOffset < fileLength && imageOffset < inputLength) {
+             imageHeader = readImageHeader(input, imageOffset);
+             imageSize = getImageSize(imageHeader[0]);
+-            imageOffset += imageHeader[1];
++            // PATCHED (patch-package) — GHSA-w3rx-r6r6-pgpr: an entry whose declared length is 0
++            // (or smaller than the 8-byte entry header) left imageOffset unchanged, so this loop
++            // spun forever pushing into result.images until the process died of OOM. Always
++            // advance by at least one entry header, matching findBox()'s existing convention in
++            // ./utils.js ("If box.size is 0, advance by at least 8 bytes").
++            imageOffset += imageHeader[1] > ENTRY_HEADER_SIZE ? imageHeader[1] : ENTRY_HEADER_SIZE;
+             result.images.push(imageSize);
+         }
+         return result;
+diff --git a/node_modules/image-size/dist/types/jxl.js b/node_modules/image-size/dist/types/jxl.js
+index f557b0a..7da0f5d 100644
+--- a/node_modules/image-size/dist/types/jxl.js
++++ b/node_modules/image-size/dist/types/jxl.js
+@@ -3,6 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.JXL = void 0;
+ const utils_1 = require("./utils");
+ const jxl_stream_1 = require("./jxl-stream");
++// PATCHED (patch-package) — size of an ISOBMFF box header (4-byte size + 4-byte name); the
++// minimum forward step when a box declares a bogus size. See extractPartialStreams().
++const BOX_HEADER_SIZE = 8;
+ /** Extracts the codestream from a containerized JPEG XL image */
+ function extractCodestream(input) {
+     const jxlcBox = (0, utils_1.findBox)(input, 'jxlc', 0);
+@@ -24,7 +27,13 @@ function extractPartialStreams(input) {
+         if (!jxlpBox)
+             break;
+         partialStreams.push(input.slice(jxlpBox.offset + 12, jxlpBox.offset + jxlpBox.size));
+-        offset = jxlpBox.offset + jxlpBox.size;
++        // PATCHED (patch-package) — GHSA-5p2g-fcmc-qvqq: a 'jxlp' box declaring size 0 left
++        // offset unchanged, so findBox kept returning the same box and this loop spun forever
++        // pushing slices until the process died of OOM. findBox() in ./utils.js already guards
++        // its own scan this way; the caller has to guard too, because findBox returns a matching
++        // box regardless of its declared size. Always move past the box we just consumed.
++        const nextOffset = jxlpBox.offset + (jxlpBox.size > 0 ? jxlpBox.size : BOX_HEADER_SIZE);
++        offset = nextOffset > offset ? nextOffset : offset + BOX_HEADER_SIZE;
+     }
+     return partialStreams;
+ }

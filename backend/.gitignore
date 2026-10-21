@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+
+# Compiled TypeScript output
+dist/
+
+# Secrets — the real .env must never be committed
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log

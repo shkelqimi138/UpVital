@@ -1,0 +1,14 @@
+{
+  "name": "upvital",
+  "version": "1.0.0",
+  "private": true,
+  "description": "UpVital monorepo root — test orchestration only. App code lives in mobile/, backend/, web/. This file has no dependencies and is never installed or deployed (Railway deploys run from backend/).",
+  "scripts": {
+    "test": "npm --prefix backend run test && npm --prefix mobile run test && npm --prefix mobile run audit:check",
+    "test:backend": "npm --prefix backend run test",
+    "test:mobile": "npm --prefix mobile run test",
+    "lint": "npm --prefix backend run lint && npm --prefix mobile run lint",
+    "format": "npm --prefix backend run format && npm --prefix mobile run format",
+    "format:check": "npm --prefix backend run format:check && npm --prefix mobile run format:check"
+  }
+}

@@ -1,0 +1,54 @@
+diff --git a/node_modules/uuid/dist/esm-browser/v35.js b/node_modules/uuid/dist/esm-browser/v35.js
+index ceb967b..74a80ca 100644
+--- a/node_modules/uuid/dist/esm-browser/v35.js
++++ b/node_modules/uuid/dist/esm-browser/v35.js
+@@ -36,6 +36,13 @@ export default function (name, version, hashfunc) {
+     bytes[8] = bytes[8] & 0x3f | 0x80;
+ 
+     if (buf) {
++      // PATCHED (patch-package) — GHSA-w5hq-g745-h8pq: the 16-byte write below had no bounds
++      // check, so a short `buf` or an `offset` near its end wrote past the end of the caller's
++      // buffer. Matches the guard uuid added in 11.1.1.
++      if (off < 0 || off + 16 > buf.length) {
++        throw new RangeError('UUID byte range ' + off + ':' + (off + 15) + ' is out of buffer bounds');
++      }
++
+       for (var idx = 0; idx < 16; ++idx) {
+         buf[off + idx] = bytes[idx];
+       }
+diff --git a/node_modules/uuid/dist/esm-node/v35.js b/node_modules/uuid/dist/esm-node/v35.js
+index b1ff623..1f90d3d 100644
+--- a/node_modules/uuid/dist/esm-node/v35.js
++++ b/node_modules/uuid/dist/esm-node/v35.js
+@@ -36,6 +36,13 @@ export default function (name, version, hashfunc) {
+     bytes[8] = bytes[8] & 0x3f | 0x80;
+ 
+     if (buf) {
++      // PATCHED (patch-package) — GHSA-w5hq-g745-h8pq: the 16-byte write below had no bounds
++      // check, so a short `buf` or an `offset` near its end wrote past the end of the caller's
++      // buffer. Matches the guard uuid added in 11.1.1.
++      if (off < 0 || off + 16 > buf.length) {
++        throw new RangeError('UUID byte range ' + off + ':' + (off + 15) + ' is out of buffer bounds');
++      }
++
+       for (var idx = 0; idx < 16; ++idx) {
+         buf[off + idx] = bytes[idx];
+       }
+diff --git a/node_modules/uuid/dist/v35.js b/node_modules/uuid/dist/v35.js
+index 3aecfa0..4eb46fb 100644
+--- a/node_modules/uuid/dist/v35.js
++++ b/node_modules/uuid/dist/v35.js
+@@ -49,6 +49,13 @@ function _default(name, version, hashfunc) {
+     bytes[8] = bytes[8] & 0x3f | 0x80;
+ 
+     if (buf) {
++      // PATCHED (patch-package) — GHSA-w5hq-g745-h8pq: the 16-byte write below had no bounds
++      // check, so a short `buf` or an `offset` near its end wrote past the end of the caller's
++      // buffer. Matches the guard uuid added in 11.1.1 (dist/cjs/v35.js).
++      if (off < 0 || off + 16 > buf.length) {
++        throw new RangeError('UUID byte range ' + off + ':' + (off + 15) + ' is out of buffer bounds');
++      }
++
+       for (var idx = 0; idx < 16; ++idx) {
+         buf[off + idx] = bytes[idx];
+       }

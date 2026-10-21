@@ -1,0 +1,15 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appID": "TEAMID.com.upvital.app",
+        "components": [
+          {
+            "/": "/confirmed*",
+            "comment": "Email-confirmation Universal Link only. Everything else on upvital.app deliberately stays in the browser (marketing site, /privacy, /terms)."
+          }
+        ]
+      }
+    ]
+  }
+}

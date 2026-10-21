@@ -1,0 +1,45 @@
+{
+  "expo": {
+    "name": "UpVital",
+    "slug": "mobile",
+    "scheme": "upvital",
+    "version": "1.0.1",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.upvital.app",
+      "usesAppleSignIn": true,
+      "associatedDomains": ["applinks:upvital.app"],
+      "infoPlist": {
+        "NSLocationDefaultAccuracyReduced": true
+      }
+    },
+    "plugins": [
+      [
+        "expo-router",
+        {
+          "sitemap": false
+        }
+      ],
+      "expo-apple-authentication",
+      "expo-background-task",
+      "expo-notifications",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "UpVital uses your approximate location to show local air quality."
+        }
+      ],
+      [
+        "@kingstinct/react-native-healthkit",
+        {
+          "NSHealthShareUsageDescription": "UpVital reads your sleep, heart rate, HRV, resting heart rate, blood oxygen, body temperature, steps, active energy, workouts, weight, body fat and date of birth from Apple Health to calculate your daily scores and biological age.",
+          "NSHealthUpdateUsageDescription": "UpVital doesn't write any data to Apple Health."
+        }
+      ],
+      "expo-secure-store"
+    ]
+  }
+}

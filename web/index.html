@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="UpVital turns your Apple Health data into a daily longevity snapshot - Recovery, Sleep, Stress and Daily scores, an AI coach, and biological age.">
+<meta property="og:title" content="UpVital">
+<meta property="og:description" content="Your Apple Health data, turned into a daily longevity snapshot.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://upvital.app/">
+<meta property="og:image" content="https://upvital.app/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="UpVital - wake up to a number that means something. The UpVital website and the app's daily score on an iPhone.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="UpVital">
+<meta name="twitter:description" content="Your Apple Health data, turned into a daily longevity snapshot.">
+<meta name="twitter:image" content="https://upvital.app/og-image.jpg">
+<title>UpVital - Your daily longevity score from Apple Health</title>
+<meta name="theme-color" content="#0C6B3C">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2316A34A'/%3E%3Cpath d='M6 17h4l3-8 4 14 3-8h6' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<style>html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/figtree-latin-f96cbb.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/bricolage-grotesque-latin-3b58e8.woff2" crossorigin>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+  /* ---- Tokens: the site is dark-only, like the app ---- */
+  :root{
+    --bg:#080A09;
+    --surface:#131817;
+    --surface-2:#1B2120;
+    --ink:#F1F5F3;
+    --ink-2:#9DA7A2;
+    --ink-3:#838D88;
+    --border:rgba(255,255,255,.09);
+    --border-strong:rgba(255,255,255,.15);
+    --brand:#3FD37F;
+    --brand-bright:#4FE08C;
+    --brand-ink:#B9F5D0;
+    --mint:#B9F5D0;
+    --shadow:0 1px 2px rgba(0,0,0,.5),0 20px 48px -18px rgba(0,0,0,.7);
+    --shadow-card:0 1px 2px rgba(0,0,0,.4),0 14px 34px -18px rgba(0,0,0,.6);
+    --c-heart:#E5484D;
+    --c-heart-soft:rgba(229,72,77,.18);
+    --c-hrv:#16A34A;
+    --c-hrv-soft:rgba(63,211,127,.18);
+    --c-steps:#2F6FED;
+    --c-steps-soft:rgba(47,111,237,.20);
+    --c-cal:#E0A02F;
+    --c-cal-soft:rgba(224,160,47,.20);
+    --c-sleep:#5B5BD6;
+    --c-sleep-soft:rgba(120,120,230,.22);
+    --c-temp:#0E9AA7;
+    --c-temp-soft:rgba(14,154,167,.20);
+    color-scheme:dark;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Figtree",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:1120px;margin:0 auto;padding:0 28px}
+  .narrow{max-width:1000px}
+
+  h1,h2,h3{font-family:"Bricolage Grotesque",serif;font-weight:700;line-height:1.05;text-wrap:balance;letter-spacing:-.02em;margin:0}
+  h2{font-size:clamp(1.9rem,4.4vw,2.9rem);letter-spacing:-.025em}
+  h3{font-size:1.18rem;letter-spacing:-.01em;line-height:1.2}
+  p{margin:0}
+  a{color:inherit}
+
+  .eyebrow{
+    font-family:"IBM Plex Mono",monospace;font-size:.74rem;font-weight:500;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--brand);
+  }
+  .lede{font-size:clamp(1.06rem,2vw,1.24rem);color:var(--ink-2);line-height:1.55;max-width:60ch}
+
+  /* ---- Nav ---- */
+  nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 82%,transparent);
+    backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid var(--border)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:62px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:"Bricolage Grotesque",serif;font-weight:800;font-size:1.16rem;letter-spacing:-.02em}
+  .brand .mark{width:26px;height:26px;flex:0 0 auto}
+  .nav-links{display:flex;align-items:center;gap:26px}
+  .nav-links a{font-size:.95rem;color:var(--ink-2);text-decoration:none;font-weight:500;min-height:44px;display:inline-flex;align-items:center}
+  .nav-links a:hover{color:var(--ink)}
+  .nav-links .btn{padding:8px 16px}
+  .nav-links a.btn-primary{color:#04170D} /* the nav-link grey above would otherwise win (1.8:1 on green) */
+  @media (max-width:680px){.nav-links a.plain{display:none}}
+
+  /* ---- Buttons ---- */
+  .btn{display:inline-flex;align-items:center;gap:9px;font-family:"Figtree";font-weight:600;font-size:.98rem;
+    padding:13px 22px;border-radius:13px;text-decoration:none;border:1px solid transparent;cursor:pointer;
+    transition:transform .16s ease,box-shadow .16s ease,background .16s ease}
+  .btn-primary{background:var(--brand-bright);color:#04170D;box-shadow:0 8px 22px -8px color-mix(in srgb,var(--brand-bright) 70%,transparent)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 30px -10px color-mix(in srgb,var(--brand-bright) 75%,transparent)}
+  .btn-ghost{background:transparent;color:var(--ink);border-color:var(--border-strong)}
+  .btn-ghost:hover{background:var(--surface-2);transform:translateY(-1px)}
+  .btn svg{width:18px;height:18px}
+
+  /* ---- Contact modal ---- */
+  .modal{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
+  .modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px)}
+  .modal-card{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);width:min(440px,100%);padding:30px 26px 26px;max-height:90vh;overflow:auto}
+  .modal-x{position:absolute;top:10px;right:14px;background:none;border:0;font-size:1.7rem;line-height:1;color:var(--ink-3);cursor:pointer}
+  .modal-x:hover{color:var(--ink)}
+  .modal-sub{color:var(--ink-2);font-size:.95rem;margin-top:6px}
+  #contactForm{display:flex;flex-direction:column;gap:14px;margin-top:20px}
+  #contactForm label{display:flex;flex-direction:column;gap:6px;font-size:.82rem;font-weight:600;color:var(--ink-2)}
+  #contactForm input,#contactForm textarea{font:inherit;font-size:1rem;color:var(--ink);background:var(--surface-2);border:1px solid var(--border);border-radius:11px;padding:11px 13px;width:100%;resize:vertical}
+  #contactForm input:focus,#contactForm textarea:focus{outline:2px solid var(--brand-bright);outline-offset:1px;border-color:transparent}
+  #contactForm .btn{justify-content:center;margin-top:4px}
+  #contactCaptcha{min-height:65px}
+  .modal-note{font-size:.75rem;color:var(--ink-3);text-align:center;margin-top:2px}
+  .modal-note a{color:inherit;text-decoration:underline}
+  .modal-error{color:#E5484D;font-size:.86rem;margin:0}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+  .modal-done{text-align:center;padding:10px 0 4px}
+  .modal-done h3{margin-top:14px}
+  .modal-done .btn{margin-top:20px}
+  .done-check{width:54px;height:54px;border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center;
+    background:color-mix(in srgb,var(--brand-bright) 20%,transparent);color:var(--brand);font-size:1.55rem;font-weight:700}
+  /* Legal (Privacy/Terms) popups */
+  .legal-card{width:min(680px,100%);max-height:88vh;display:flex;flex-direction:column;padding:0;overflow:hidden}
+  .legal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 22px 13px;border-bottom:1px solid var(--border);background:var(--surface)}
+  .legal-head .modal-x{position:static}
+  .legal-head .eyebrow{font-size:.72rem;letter-spacing:.16em}
+  .legal-body{overflow:auto;padding:18px 26px 28px}
+  .legal-body h3{font-family:"Bricolage Grotesque",serif;font-weight:700;font-size:1.5rem;letter-spacing:-.02em;margin:2px 0 0;color:var(--ink)}
+  .legal-body h4{font-family:"Bricolage Grotesque",serif;font-weight:600;font-size:1.05rem;letter-spacing:-.01em;margin:1.5rem 0 .4rem;color:var(--ink)}
+  .legal-body p{color:var(--ink-2);font-size:.95rem;margin:.5rem 0}
+  .legal-body .lm-meta{color:var(--ink-3);font-size:.82rem;margin-top:8px}
+
+  /* ---- Hero ---- */
+  .hero{position:relative;padding:clamp(48px,8vw,96px) 0 clamp(40px,6vw,72px)}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(32px,5vw,64px);align-items:center}
+  @media (max-width:900px){.hero-grid{grid-template-columns:1fr;gap:44px}}
+  .hero h1{font-size:clamp(2.5rem,6.4vw,4.35rem);font-weight:800;letter-spacing:-.035em}
+  .hero h1 .g{background:linear-gradient(120deg,var(--brand-bright),var(--brand-ink));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero .lede{margin-top:22px}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:32px;align-items:center}
+  .cta-note{font-family:"IBM Plex Mono",monospace;font-size:.76rem;color:var(--ink-3);letter-spacing:.02em;margin-top:16px}
+  .cta-note b{color:var(--brand);font-weight:600}
+  .hero-glow{position:absolute;inset:-10% 40% auto -10%;height:520px;pointer-events:none;z-index:-1;
+    background:radial-gradient(60% 60% at 30% 20%,color-mix(in srgb,var(--brand-bright) 26%,transparent),transparent 70%);
+    filter:blur(20px);opacity:.7}
+
+  /* ---- Phone / app snapshot ---- */
+  .phone{
+    position:relative;justify-self:center;width:min(300px,78vw);border-radius:46px;padding:9px;
+    background:linear-gradient(#17181b,#0a0a0c);
+    box-shadow:0 0 0 1.5px rgba(255,255,255,.07),0 34px 72px -30px rgba(0,0,0,.78),inset 0 0 3px rgba(255,255,255,.10);
+  }
+  /* side buttons, like a real device */
+  .phone::before{content:"";position:absolute;left:-2px;top:26%;width:3px;height:15%;border-radius:3px;background:#2a2a30}
+  .phone::after{content:"";position:absolute;right:-2px;top:24%;width:3px;height:10%;border-radius:3px;background:#2a2a30}
+  .screen{background:#080A09;border-radius:26px;padding:20px 17px 22px;overflow:hidden;color:#F1F5F3}
+  .shot{width:100%;height:auto;display:block;border-radius:38px}
+  .shots{padding:clamp(8px,2vw,24px) 0 clamp(28px,5vw,52px)}
+  .shots-row{display:flex;gap:clamp(16px,3vw,28px);justify-content:center;flex-wrap:wrap;margin-top:36px}
+  .phone.sm{width:min(250px,74vw)}
+  .screen-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px}
+  .screen-top .title{font-family:"Bricolage Grotesque",serif;font-weight:700;font-size:1.25rem;letter-spacing:-.02em}
+  .screen-top .date{font-family:"IBM Plex Mono",monospace;font-size:.66rem;color:#8B9590;letter-spacing:.04em}
+  .ring-hero{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:linear-gradient(158deg,#1AA85B,#12854A 55%,#0C6B3C);border-radius:20px;padding:22px 0 18px;margin-bottom:12px;
+    box-shadow:0 14px 30px -14px rgba(26,168,91,.6)}
+  .ring-hero .lbl{font-family:"IBM Plex Mono",monospace;font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.82)}
+  .gauge{width:132px;height:132px;margin:4px 0 2px}
+  .gauge circle{fill:none;stroke-width:11;stroke-linecap:round}
+  .gauge .track{stroke:rgba(255,255,255,.18)}
+  .gauge .val{stroke:#EAFBF0;stroke-dasharray:352;stroke-dashoffset:352;transform:rotate(-90deg);transform-origin:50% 50%;
+    transition:stroke-dashoffset 1.4s cubic-bezier(.2,.7,.2,1)}
+  .gauge.on .val{stroke-dashoffset:63}
+  .gauge-num{position:absolute;top:50%;left:0;right:0;transform:translateY(-58%);text-align:center;pointer-events:none}
+  .gauge-num b{font-family:"Bricolage Grotesque",serif;font-size:2.5rem;font-weight:700;color:#fff;line-height:1;font-variant-numeric:tabular-nums}
+  .gauge-num span{display:block;font-family:"IBM Plex Mono",monospace;font-size:.62rem;letter-spacing:.12em;color:rgba(255,255,255,.9);margin-top:5px;text-transform:uppercase}
+  .mini-row{display:flex;gap:8px;margin-bottom:12px}
+  .mini{flex:1;background:#131817;border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:11px 10px}
+  .mini .k{font-family:"IBM Plex Mono",monospace;font-size:.58rem;letter-spacing:.08em;color:#8B9590;text-transform:uppercase}
+  .mini .v{font-family:"Bricolage Grotesque",serif;font-weight:700;font-size:1.28rem;margin-top:3px;font-variant-numeric:tabular-nums}
+  .mini .v small{font-size:.62rem;color:#8B9590;font-family:"IBM Plex Mono",monospace;font-weight:400;margin-left:3px}
+  .srow{display:flex;align-items:center;gap:11px;padding:10px 4px;border-top:1px solid rgba(255,255,255,.06)}
+  .srow:first-of-type{border-top:none}
+  .srow .chip{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .srow .chip svg{width:17px;height:17px}
+  .srow .nm{flex:1;font-size:.9rem;font-weight:500}
+  .srow .nm .new{font-family:"IBM Plex Mono",monospace;font-size:.54rem;letter-spacing:.06em;background:var(--c-temp-soft);color:#4FD4DE;
+    padding:2px 6px;border-radius:6px;margin-left:7px;vertical-align:middle;text-transform:uppercase}
+  .srow .rv{font-family:"Bricolage Grotesque",serif;font-weight:700;font-size:1.02rem;font-variant-numeric:tabular-nums}
+  .srow .rv small{font-size:.62rem;color:#8B9590;font-weight:400;margin-left:2px;font-family:"IBM Plex Mono",monospace}
+
+  /* ---- Sections ---- */
+  section{padding:clamp(56px,9vw,104px) 0}
+  .sec-head{max-width:640px;margin-bottom:clamp(30px,4vw,48px)}
+  .sec-head h2{margin-top:14px}
+  .sec-head p{margin-top:16px}
+
+  /* Scores row */
+  .scores{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  @media (max-width:860px){.scores{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:440px){.scores{grid-template-columns:1fr}}
+  .score-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:22px 20px;box-shadow:var(--shadow-card)}
+  .score-card .g2{width:66px;height:66px;margin-bottom:14px}
+  .score-card .g2 circle{fill:none;stroke-width:8;stroke-linecap:round}
+  .score-card .g2 .t{stroke:var(--surface-2)}
+  .score-card .g2 .v{stroke-dasharray:176;transform:rotate(-90deg);transform-origin:50% 50%}
+  .score-card h3{font-size:1.05rem}
+  .score-card .num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:"Figtree",sans-serif;font-weight:600;font-size:1.25rem;letter-spacing:0;font-variant-numeric:tabular-nums;line-height:1}
+  .score-card p{color:var(--ink-2);font-size:.92rem;margin-top:7px;line-height:1.45}
+
+  /* Metrics grid */
+  .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media (max-width:820px){.metrics{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:480px){.metrics{grid-template-columns:1fr}}
+  .metric{position:relative;display:flex;gap:14px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);
+    border-radius:16px;padding:18px;box-shadow:var(--shadow-card);transition:transform .16s ease,border-color .16s ease}
+  .metric:hover{transform:translateY(-3px);border-color:var(--border-strong)}
+  .metric .chip{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .metric .chip svg{width:21px;height:21px}
+  .metric .mt{font-weight:600;font-size:1rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .metric .md{color:var(--ink-2);font-size:.88rem;margin-top:3px;line-height:1.4}
+  .tag-new{font-family:"IBM Plex Mono",monospace;font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;
+    background:var(--brand-bright);color:#04170D;padding:2px 7px;border-radius:999px;font-weight:600}
+
+  /* Insight / coach block */
+  .insight-block{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:stretch}
+  @media (max-width:820px){.insight-block{grid-template-columns:1fr}}
+  .ink-card{background:#0C100E;border:1px solid rgba(255,255,255,.09);border-radius:22px;padding:28px;color:#EAF0EC;
+    box-shadow:var(--shadow)}
+  .ink-card .eyebrow{color:var(--mint)}
+  .ink-card h3{color:#fff;margin-top:12px;font-size:1.35rem}
+  .ink-card p{color:#AEB8B2;margin-top:12px;font-size:.98rem;line-height:1.6}
+  .chat{display:flex;flex-direction:column;gap:11px;margin-top:20px}
+  .bubble{max-width:88%;padding:12px 15px;border-radius:16px;font-size:.92rem;line-height:1.45}
+  .bubble.me{align-self:flex-end;background:var(--brand-bright);color:#04170D;border-bottom-right-radius:5px}
+  .bubble.ai{align-self:flex-start;background:#1B2120;color:#E7EDE9;border-bottom-left-radius:5px;border:1px solid rgba(255,255,255,.06)}
+  .insight-side{display:flex;flex-direction:column;gap:16px}
+  .fact{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--shadow-card)}
+  .fact .big{font-family:"Bricolage Grotesque",serif;font-weight:700;font-size:2.5rem;letter-spacing:-.03em;line-height:1;background:linear-gradient(120deg,var(--brand-bright),var(--brand-ink));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .fact .cap{color:var(--ink-2);font-size:.92rem;margin-top:8px}
+
+  /* Privacy strip */
+  .privacy{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+  @media (max-width:760px){.privacy{grid-template-columns:1fr}}
+  .pcard{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--shadow-card)}
+  .pcard .pi{width:34px;height:34px;color:var(--brand);margin-bottom:12px}
+  .pcard h3{font-size:1.02rem}
+  .pcard p{color:var(--ink-2);font-size:.9rem;margin-top:6px;line-height:1.5}
+
+  /* CTA band */
+  .cta-band{background:linear-gradient(158deg,#1AA85B,#12854A 55%,#0C6B3C);border-radius:28px;
+    padding:clamp(38px,6vw,64px);text-align:center;color:#fff;position:relative;overflow:hidden;box-shadow:0 30px 60px -30px rgba(18,133,74,.7)}
+  .cta-band::after{content:"";position:absolute;inset:0;background:radial-gradient(70% 120% at 50% -20%,rgba(255,255,255,.22),transparent 60%);pointer-events:none}
+  .cta-band h2{color:#fff;position:relative}
+  .cta-band p{color:rgba(255,255,255,.9);margin:16px auto 0;max-width:48ch;position:relative}
+  .cta-band .btn{margin-top:28px;position:relative}
+  .cta-band .btn-primary{background:#fff;color:#0C6B3C}
+  .cta-band .cta-note{color:rgba(255,255,255,.82)}
+  .cta-band .cta-note b{color:#EAFBF0}
+
+  /* Footer */
+  footer{border-top:1px solid var(--border);padding:44px 0 56px;margin-top:20px}
+  .foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:24px;align-items:flex-start}
+  .foot .brand{margin-bottom:12px}
+  .foot p{color:var(--ink-3);font-size:.86rem;max-width:34ch}
+  .foot-links{display:flex;gap:30px;flex-wrap:wrap}
+  .foot-col h3{font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:0 0 12px}
+  .foot-col a{display:flex;align-items:center;min-height:44px;color:var(--ink-2);text-decoration:none;font-size:.92rem}
+  .foot-col a:hover{color:var(--brand)}
+  .legal{margin-top:34px;padding-top:22px;border-top:1px solid var(--border);color:var(--ink-3);font-size:.82rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  .disclaimer{font-size:.78rem;color:var(--ink-3);max-width:70ch;margin-top:8px;line-height:1.5}
+
+  /* reveal - gated on .js so the page is fully visible if JS never runs */
+  html.js .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+  html.js .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){html.js .reveal{opacity:1;transform:none;transition:none}.gauge .val{transition:none}}
+
+  a:focus-visible,.btn:focus-visible{outline:2px solid var(--brand-bright);outline-offset:3px;border-radius:8px}
+</style>
+
+<!-- reusable icons -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 5.6a5 5 0 0 0-7.1 0L12 7.3l-1.7-1.7a5 5 0 0 0-7.1 7.1l1.7 1.7L12 21l7.1-7.1 1.7-1.7a5 5 0 0 0 0-6.6z"/></symbol>
+    <symbol id="i-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4l2.5-7 5 16 2.5-9H22"/></symbol>
+    <symbol id="i-steps" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4a2.5 2.5 0 0 1 2.5 2.5c0 1.5-.6 2.4-.6 4.5 0 1.2-.7 2-1.9 2s-1.9-.8-1.9-2c0-2.1-.6-3-.6-4.5A2.5 2.5 0 0 1 7 4z"/><path d="M6 15.5c0 1.4.4 2.5 1 2.5s1-1.1 1-2.5"/><path d="M17 8a2.5 2.5 0 0 1 2.5 2.5c0 1.5-.6 2.4-.6 4.5 0 1.2-.7 2-1.9 2s-1.9-.8-1.9-2c0-2.1-.6-3-.6-4.5A2.5 2.5 0 0 1 17 8z"/><path d="M16 19.5c0 1.4.4 2.5 1 2.5s1-1.1 1-2.5"/></symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2s4 3.5 4 8a4 4 0 0 1-8 0c0-1 .3-1.8.3-1.8S6 10 6 13a6 6 0 0 0 12 0c0-5-6-11-6-11z"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol>
+    <symbol id="i-drop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 6.3 6 10.5A6 6 0 0 1 6 13.5C6 9.3 12 3 12 3z"/><path d="M9.5 14a2.5 2.5 0 0 0 2.5 2.2"/></symbol>
+    <symbol id="i-temp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.8V4a2 2 0 0 0-4 0v10.8a4 4 0 1 0 4 0z"/><path d="M12 9v6.5"/></symbol>
+    <symbol id="i-gauge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 14a5 5 0 0 1 5-5"/><path d="M4 20a9 9 0 1 1 16 0"/><circle cx="12" cy="14" r="1.4" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-coffee" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2.5c.6.7.6 1.3 0 2M12 2.5c.6.7.6 1.3 0 2"/></symbol>
+    <symbol id="i-wind" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h11a2.5 2.5 0 1 0-2.5-2.5"/><path d="M3 12h16a2.5 2.5 0 1 1-2.5 2.5"/><path d="M3 16h9a2.2 2.2 0 1 1-2.2 2.2"/></symbol>
+    <symbol id="i-scale" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 8l8 8"/><circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></symbol>
+    <symbol id="i-apple" viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.9c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.8-3.5.8s-1.8-.8-3-.8c-1.5 0-2.9.9-3.7 2.3-1.6 2.7-.4 6.8 1.1 9 .7 1.1 1.6 2.3 2.8 2.3 1.1 0 1.5-.7 2.9-.7s1.7.7 2.9.7 2-1.1 2.7-2.1c.9-1.3 1.2-2.5 1.2-2.5s-2.4-.9-2.4-3.7zM14.3 6.1c.6-.8 1-1.8.9-2.9-.9 0-2 .6-2.6 1.3-.6.7-1.1 1.7-.9 2.7 1 .1 2-.4 2.6-1.1z"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="i-plug" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3v6M15 3v6"/><path d="M7 9h10v3a5 5 0 0 1-10 0z"/><path d="M12 17v4"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/></symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20c0-9 6-15 16-15 0 10-6 15-16 15z"/><path d="M4 20c3-6 7-9 11-10"/></symbol>
+  </defs>
+</svg>
+
+<!-- Post email-confirm landing (c-2). Shown only when the sign-in service redirects here after a
+     successful confirmation (see the detector script near </body>); otherwise inert. -->
+<style>
+  .confirm-overlay{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(8,10,9,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+  .confirm-card{background:var(--surface);color:var(--ink);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);max-width:420px;width:100%;padding:32px 28px;text-align:center;font-family:'Figtree',system-ui,-apple-system,sans-serif}
+  .confirm-check{width:56px;height:56px;margin:0 auto 16px;border-radius:50%;background:#16A34A;color:#fff;font-size:30px;line-height:56px;font-weight:700}
+  .confirm-card h2{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-size:1.5rem;margin:0 0 8px;color:var(--ink)}
+  .confirm-card p{color:var(--ink-2);margin:0 0 20px;line-height:1.5;font-size:1rem}
+  .confirm-btn{display:inline-block;background:#12854A;color:#fff;text-decoration:none;font-weight:600;font-size:1rem;padding:13px 28px;border-radius:12px}
+  .confirm-hint{font-size:.85rem;color:var(--ink-3);margin:18px 0 0!important}
+  .confirm-dismiss{display:inline-block;margin-top:14px;background:none;border:0;color:var(--ink-3);font:inherit;font-size:.9rem;text-decoration:underline;cursor:pointer}
+</style>
+<div id="confirmOverlay" class="confirm-overlay" hidden>
+  <div class="confirm-card" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="confirm-check" aria-hidden="true">&#10003;</div>
+    <h2 id="confirmTitle">Email confirmed</h2>
+    <p>Your email is verified. Open UpVital and log in to get started.</p>
+    <a class="confirm-btn" href="upvital://">Open UpVital</a>
+    <p class="confirm-hint">If the app doesn't open, launch UpVital from your Home Screen and log in.</p>
+    <button class="confirm-dismiss" type="button" data-confirm-dismiss>Continue to the website</button>
+  </div>
+</div>
+
+<nav>
+  <div class="wrap nav-in">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3FD37F"/><stop offset="1" stop-color="#0C6B3C"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M8 19h3.2l2-8 3.4 12 2.2-9H24" fill="none" stroke="#04170D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      UpVital
+    </div>
+    <div class="nav-links">
+      <a class="plain" href="#inside">What's inside</a>
+      <a class="plain" href="#coach">AI coach</a>
+      <a class="plain" href="/privacy" data-modal="privacy">Privacy</a>
+      <a class="plain" href="/terms" data-modal="terms">Terms</a>
+      <a class="plain" href="#" data-contact>Contact</a>
+      <a class="btn btn-primary" href="#get">Install</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-glow"></div>
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">Longevity · iOS · Apple Health</span>
+      <h1>Wake up to a number that <span class="g">means something.</span></h1>
+      <p class="lede">UpVital reads your Apple Health data and computes your Recovery, Sleep, Stress, and overall Daily score every morning - then hands you one clear insight and an AI coach that already knows your trends.</p>
+      <div class="hero-cta">
+        <span class="btn btn-primary" data-appstore-link aria-disabled="true" style="opacity:.55;cursor:default;pointer-events:none"><svg aria-hidden="true"><use href="#i-apple"/></svg>Coming soon</span>
+        <a class="btn btn-ghost" href="#inside">See what's inside</a>
+      </div>
+      <p class="cta-note">Currently in <b>TestFlight beta</b> - App Store link coming soon.</p>
+    </div>
+
+    <!-- App snapshot -->
+    <div class="phone reveal">
+      <img class="shot" src="screenshots/home-600.webp" srcset="screenshots/home-600.webp 600w, screenshots/home-900.webp 900w" sizes="(max-width: 385px) 78vw, 300px" width="600" height="1304" alt="UpVital dashboard - today's Daily Score with Recovery, Sleep and Stress rings" fetchpriority="high">
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- SCREENS -->
+  <section id="screens" class="shots">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">The app</span>
+        <h2>Every screen, built to be read at a glance</h2>
+        <p class="lede">Your health, your effort, and an AI coach that already knows your trends - in one calm, dark interface.</p>
+      </div>
+      <div class="shots-row">
+        <div class="phone sm reveal"><img class="shot" src="screenshots/health-600.webp" srcset="screenshots/health-600.webp 600w, screenshots/health-900.webp 900w" sizes="(max-width: 338px) 74vw, 250px" width="600" height="1304" alt="Health metrics with trend sparklines" loading="lazy" decoding="async"></div>
+        <div class="phone sm reveal"><img class="shot" src="screenshots/activity-600.webp" srcset="screenshots/activity-600.webp 600w, screenshots/activity-900.webp 900w" sizes="(max-width: 338px) 74vw, 250px" width="600" height="1304" alt="Activity - daily strain gauge and effort through the day" loading="lazy" decoding="async"></div>
+        <div class="phone sm reveal"><img class="shot" src="screenshots/coach-600.webp" srcset="screenshots/coach-600.webp 600w, screenshots/coach-900.webp 900w" sizes="(max-width: 338px) 74vw, 250px" width="600" height="1304" alt="AI coach with data-driven daily suggestions" loading="lazy" decoding="async"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE MORNING SNAPSHOT -->
+  <section id="inside">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">The morning snapshot</span>
+        <h2>Four scores, computed while you sleep</h2>
+        <p class="lede">Each morning UpVital turns the night's data into scores you can actually act on - built from sleep stages, heart rate, HRV, and activity, and refined as the models learn your baseline.</p>
+      </div>
+      <div class="scores">
+        <div class="score-card reveal">
+          <div style="position:relative;width:66px;height:66px">
+            <svg class="g2" viewBox="0 0 64 64" aria-hidden="true"><circle class="t" cx="32" cy="32" r="28"/><circle class="v" cx="32" cy="32" r="28" style="stroke:var(--brand-bright);stroke-dashoffset:32"/></svg>
+            <span class="num" style="color:var(--brand)">82</span>
+          </div>
+          <h3>Recovery</h3>
+          <p>How ready your body is today, from overnight HRV and resting heart rate.</p>
+        </div>
+        <div class="score-card reveal">
+          <div style="position:relative;width:66px;height:66px">
+            <svg class="g2" viewBox="0 0 64 64" aria-hidden="true"><circle class="t" cx="32" cy="32" r="28"/><circle class="v" cx="32" cy="32" r="28" style="stroke:var(--c-sleep);stroke-dashoffset:44"/></svg>
+            <span class="num" style="color:var(--c-sleep)">79</span>
+          </div>
+          <h3>Sleep</h3>
+          <p>Duration and stage quality - deep, REM, core and time awake.</p>
+        </div>
+        <div class="score-card reveal">
+          <div style="position:relative;width:66px;height:66px">
+            <svg class="g2" viewBox="0 0 64 64" aria-hidden="true"><circle class="t" cx="32" cy="32" r="28"/><circle class="v" cx="32" cy="32" r="28" style="stroke:var(--c-cal);stroke-dashoffset:70"/></svg>
+            <span class="num" style="color:var(--c-cal)">Low</span>
+          </div>
+          <h3>Stress</h3>
+          <p>Physiological load through the day, tracked from your heart-rate signal.</p>
+        </div>
+        <div class="score-card reveal">
+          <div style="position:relative;width:66px;height:66px">
+            <svg class="g2" viewBox="0 0 64 64" aria-hidden="true"><circle class="t" cx="32" cy="32" r="28"/><circle class="v" cx="32" cy="32" r="28" style="stroke:var(--brand);stroke-dashoffset:28"/></svg>
+            <span class="num" style="color:var(--brand)">84</span>
+          </div>
+          <h3>Daily</h3>
+          <p>One headline number that ties recovery, sleep and strain together.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SIGNALS -->
+  <section style="background:var(--surface-2)">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Every signal, one place</span>
+        <h2>The vitals behind the scores</h2>
+        <p class="lede">UpVital reads the metrics that matter from Apple Health and keeps them together - no ten apps, no exporting. This build adds blood oxygen and body temperature.</p>
+      </div>
+      <div class="metrics">
+        <div class="metric reveal"><span class="chip" style="background:var(--c-heart-soft)"><svg style="color:var(--c-heart)"><use href="#i-heart"/></svg></span><div><div class="mt">Resting heart rate</div><div class="md">Your daily resting bpm and its trend line.</div></div></div>
+        <div class="metric reveal"><span class="chip" style="background:var(--c-hrv-soft)"><svg style="color:var(--c-hrv)"><use href="#i-pulse"/></svg></span><div><div class="mt">Heart rate variability</div><div class="md">Overnight HRV - the core input to Recovery.</div></div></div>
+        <div class="metric reveal"><span class="chip" style="background:var(--c-sleep-soft)"><svg style="color:var(--c-sleep)"><use href="#i-drop"/></svg></span><div><div class="mt">Blood oxygen <span class="tag-new">New</span></div><div class="md">SpO₂ readings from Apple Watch, tracked over time.</div></div></div>
+        <div class="metric reveal"><span class="chip" style="background:var(--c-temp-soft)"><svg style="color:var(--c-temp)"><use href="#i-temp"/></svg></span><div><div class="mt">Body temperature <span class="tag-new">New</span></div><div class="md">Wrist temperature trends, in °C.</div></div></div>
+        <div class="metric reveal"><span class="chip" style="background:var(--c-sleep-soft)"><svg style="color:var(--c-sleep)"><use href="#i-moon"/></svg></span><div><div class="mt">Sleep &amp; stages</div><div class="md">Deep, REM, core and awake, night by night.</div></div></div>
+        <div class="metric reveal"><span class="chip" style="background:var(--c-steps-soft)"><svg style="color:var(--c-steps)"><use href="#i-steps"/></svg></span><div><div class="mt">Steps &amp; activity</div><div class="md">Daily movement and intraday activity.</div></div></div>
+        <div class="metric reveal"><span class="chip" style="background:var(--c-cal-soft)"><svg style="color:var(--c-cal)"><use href="#i-flame"/></svg></span><div><div class="mt">Active calories</div><div class="md">Energy burned, feeding your strain.</div></div></div>
+        <div class="metric reveal"><span class="chip" style="background:var(--c-sleep-soft)"><svg style="color:var(--c-sleep)"><use href="#i-scale"/></svg></span><div><div class="mt">Body composition</div><div class="md">Weight and body-fat % from a connected scale.</div></div></div>
+        <div class="metric reveal"><span class="chip" style="background:var(--c-cal-soft)"><svg style="color:var(--c-cal)"><use href="#i-coffee"/></svg></span><div><div class="mt">Caffeine</div><div class="md">Active mg on board, with a half-life curve.</div></div></div>
+        <div class="metric reveal"><span class="chip" style="background:var(--c-temp-soft)"><svg style="color:var(--c-temp)"><use href="#i-wind"/></svg></span><div><div class="mt">Local air quality</div><div class="md">Air quality where you are, from your location.</div></div></div>
+        <div class="metric reveal"><span class="chip" style="background:var(--c-hrv-soft)"><svg style="color:var(--c-hrv)"><use href="#i-pulse"/></svg></span><div><div class="mt">Strain</div><div class="md">How hard your day taxed your body.</div></div></div>
+        <div class="metric reveal"><span class="chip" style="background:var(--c-hrv-soft)"><svg style="color:var(--brand)"><use href="#i-gauge"/></svg></span><div><div class="mt">Trends</div><div class="md">7, 30 and 90-day views of every metric.</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI COACH + INSIGHT -->
+  <section id="coach">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Insight &amp; coaching</span>
+        <h2>An AI coach that has read your data</h2>
+        <p class="lede">Every morning UpVital writes one personalized insight from your own numbers. Have a question? The coach answers with your trends in hand - not generic advice.</p>
+      </div>
+      <div class="insight-block">
+        <div class="ink-card reveal">
+          <span class="eyebrow">Today's insight</span>
+          <h3>Your recovery is up 11% this week</h3>
+          <p>Three nights of 7h+ sleep lifted your overnight HRV. You're primed for a harder session today - just keep an eye on that afternoon caffeine, which has been landing after 4pm.</p>
+          <div class="chat">
+            <div class="bubble me">Why is my sleep score lower than last week?</div>
+            <div class="bubble ai">You're sleeping about the same total time, but deep sleep dropped ~18 min a night and you woke more often after 3am. Later screen time or that evening espresso are the usual culprits.</div>
+          </div>
+        </div>
+        <div class="insight-side">
+          <div class="fact reveal">
+            <div class="big">−4 yrs</div>
+            <div class="cap"><strong style="color:var(--ink)">Biological age.</strong> UpVital estimates how old your body reads from your metrics - and whether the trend is going your way.</div>
+          </div>
+          <div class="fact reveal">
+            <div class="big">Every morning</div>
+            <div class="cap"><strong style="color:var(--ink)">A fresh readout.</strong> Scores and insight recompute overnight, so the app is current the moment you open it.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRIVACY -->
+  <section id="privacy" style="background:var(--surface-2)">
+    <div class="wrap narrow">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Your data</span>
+        <h2>It stays yours</h2>
+        <p class="lede">Apple Health powers everything - and it's entirely under your control.</p>
+      </div>
+      <div class="privacy">
+        <div class="pcard reveal">
+          <svg class="pi" aria-hidden="true"><use href="#i-plug"/></svg>
+          <h3>Opt-in by design</h3>
+          <p>Connecting Apple Health is optional and prompted only when you choose. Nothing syncs until you say so.</p>
+        </div>
+        <div class="pcard reveal">
+          <svg class="pi" aria-hidden="true"><use href="#i-lock"/></svg>
+          <h3>Encrypted &amp; per-user</h3>
+          <p>Data travels over HTTPS and is stored with per-user access controls. Your account only ever sees your own data.</p>
+        </div>
+        <div class="pcard reveal">
+          <svg class="pi" aria-hidden="true"><use href="#i-trash"/></svg>
+          <h3>Leave anytime</h3>
+          <p>Disconnect Apple Health in device settings, or delete your account and data from the app in one tap.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="get">
+    <div class="wrap">
+      <div class="cta-band reveal">
+        <h2>Start your morning with a number.</h2>
+        <p>Install UpVital, connect Apple Health, and watch your first scores appear in seconds.</p>
+        <span class="btn btn-primary" data-appstore-link aria-disabled="true" style="opacity:.55;cursor:default;pointer-events:none"><svg aria-hidden="true"><use href="#i-apple"/></svg>Coming soon</span>
+        <p class="cta-note">In <b>TestFlight beta</b> today · App Store link coming soon</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div style="max-width:320px">
+        <div class="brand">
+          <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="url(#lg)"/><path d="M8 19h3.2l2-8 3.4 12 2.2-9H24" fill="none" stroke="#04170D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          UpVital
+        </div>
+        <p>Your Apple Health data, turned into a daily longevity snapshot.</p>
+      </div>
+      <div class="foot-links">
+        <div class="foot-col">
+          <h3>Product</h3>
+          <a href="#inside">What's inside</a>
+          <a href="#coach">AI coach</a>
+          <a href="#get">Install</a>
+        </div>
+        <div class="foot-col">
+          <h3>Legal</h3>
+          <a href="/privacy" data-modal="privacy">Privacy Policy</a>
+          <a href="/terms" data-modal="terms">Terms of Service</a>
+        </div>
+        <div class="foot-col">
+          <h3>Contact</h3>
+          <a href="#" data-contact>Send us a message</a>
+          <a href="mailto:support@upvital.app">support@upvital.app</a>
+        </div>
+      </div>
+    </div>
+    <p class="disclaimer">UpVital is a wellness and self-tracking tool - not a medical device. It does not provide medical advice, diagnosis, or treatment. Always consult a qualified healthcare provider about your health.</p>
+    <div class="legal">
+      <span>© 2026 UpVital</span>
+      <span>Made for iPhone · Requires Apple Health</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Contact modal -->
+<div id="contactModal" class="modal" hidden>
+  <div class="modal-backdrop" data-contact-close></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="cmTitle">
+    <button class="modal-x" type="button" data-contact-close aria-label="Close">&times;</button>
+    <h3 id="cmTitle">Get in touch</h3>
+    <p class="modal-sub">Questions, feedback, or beta access - drop us a note.</p>
+    <form id="contactForm" novalidate>
+      <label>Name<input name="name" autocomplete="name" required></label>
+      <label>Email<input name="email" type="email" autocomplete="email" required></label>
+      <label>Message<textarea name="message" rows="4" required></textarea></label>
+      <input type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp">
+      <div id="contactCaptcha"></div>
+      <p id="contactError" class="modal-error" hidden></p>
+      <button class="btn btn-primary" type="submit">Send message</button>
+      <p class="modal-note">We usually reply within a day or two. We use your name and email only to reply; see our <a href="/privacy">Privacy Policy</a>.</p>
+    </form>
+    <div id="contactDone" class="modal-done" hidden>
+      <div class="done-check" aria-hidden="true">&#10003;</div>
+      <h3>Message sent</h3>
+      <p class="modal-sub">Thanks - we'll get back to you at the email you gave.</p>
+      <button class="btn btn-ghost" type="button" data-contact-close>Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Privacy popup - text loaded from /privacy on first open (that page is the only copy) -->
+<div id="privacyModal" class="modal legal-modal" data-src="/privacy" hidden>
+  <div class="modal-backdrop" data-modal-close></div>
+  <div class="modal-card legal-card" role="dialog" aria-modal="true" aria-labelledby="pmTitle">
+    <div class="legal-head"><span class="eyebrow">Legal</span><button class="modal-x" type="button" data-modal-close aria-label="Close">&times;</button></div>
+    <div class="legal-body">
+      <h3 id="pmTitle">Privacy Policy</h3>
+      <p class="lm-meta">Loading…</p>
+    </div>
+  </div>
+</div>
+
+<!-- Terms popup - text loaded from /terms on first open (that page is the only copy) -->
+<div id="termsModal" class="modal legal-modal" data-src="/terms" hidden>
+  <div class="modal-backdrop" data-modal-close></div>
+  <div class="modal-card legal-card" role="dialog" aria-modal="true" aria-labelledby="tmTitle">
+    <div class="legal-head"><span class="eyebrow">Legal</span><button class="modal-x" type="button" data-modal-close aria-label="Close">&times;</button></div>
+    <div class="legal-body">
+      <h3 id="tmTitle">Terms of Service</h3>
+      <p class="lm-meta">Loading…</p>
+    </div>
+  </div>
+</div>
+
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+<script>
+  (function(){
+    function shut(m){ m.hidden = true; document.body.style.overflow = ""; }
+    // The legal popups show /privacy and /terms - those pages hold the only copy of the text, so it
+    // can't drift. Loaded on first open and restyled for the popup (h2 -> h4, .meta -> .lm-meta).
+    // Nodes are cloned from the parsed page (no innerHTML). If loading fails, open the page itself.
+    function fill(m){
+      var src = m.getAttribute("data-src");
+      if(!src || m.getAttribute("data-loaded")) return;
+      var body = m.querySelector(".legal-body");
+      fetch(src).then(function(r){ if(!r.ok) throw new Error(r.status); return r.text(); }).then(function(html){
+        var page = new DOMParser().parseFromString(html, "text/html").querySelector("main .wrap");
+        if(!page) throw new Error("no content");
+        var title = body.querySelector("h3");
+        body.textContent = "";
+        body.appendChild(title);
+        Array.prototype.forEach.call(page.children, function(el){
+          if(el.matches(".eyebrow, h1")) return;
+          var node;
+          if(el.tagName === "H2"){ node = document.createElement("h4"); node.textContent = el.textContent; }
+          else { node = document.importNode(el, true); if(el.classList.contains("meta")) node.className = "lm-meta"; }
+          body.appendChild(node);
+        });
+        m.setAttribute("data-loaded", "1");
+      }).catch(function(){ window.location.href = src; });
+    }
+    document.querySelectorAll("[data-modal]").forEach(function(t){
+      t.addEventListener("click", function(e){
+        // Cmd/Ctrl/Shift-click keeps the link's normal behaviour (the real /privacy or /terms page).
+        if(e.metaKey || e.ctrlKey || e.shiftKey) return;
+        e.preventDefault();
+        var m = document.getElementById(t.getAttribute("data-modal") + "Modal");
+        if(m){ m.hidden = false; document.body.style.overflow = "hidden"; fill(m); }
+      });
+    });
+    document.querySelectorAll(".legal-modal [data-modal-close]").forEach(function(b){
+      b.addEventListener("click", function(){ var m = b.closest(".modal"); if(m) shut(m); });
+    });
+    document.addEventListener("keydown", function(e){
+      if(e.key === "Escape"){ document.querySelectorAll(".legal-modal:not([hidden])").forEach(shut); }
+    });
+  })();
+</script>
+
+<script>
+  (function(){
+    var cm = document.getElementById("contactModal");
+    if(!cm) return;
+    var form = document.getElementById("contactForm");
+    var done = document.getElementById("contactDone");
+    var err = document.getElementById("contactError");
+    var btn = form.querySelector("button[type=submit]");
+    // Bot check - the same widget as the app's sign-up. Drawn the first time the form
+    // opens (it's hidden at page load) and reset after every send, since a token works only once.
+    var TURNSTILE_SITEKEY = "0x4AAAAAAEPExtLuuQR3l2Fb";
+    var captchaId = null;
+    function renderCaptcha(tries){
+      if(captchaId !== null) return;
+      if(!window.turnstile){ if((tries || 0) < 40) setTimeout(function(){ renderCaptcha((tries || 0) + 1); }, 250); return; }
+      captchaId = window.turnstile.render("#contactCaptcha", { sitekey: TURNSTILE_SITEKEY, theme: "auto", size: "flexible" });
+    }
+    function resetCaptcha(){ if(captchaId !== null && window.turnstile) window.turnstile.reset(captchaId); }
+    function open(e){
+      if(e) e.preventDefault();
+      renderCaptcha();
+      form.hidden = false; done.hidden = true; err.hidden = true;
+      btn.disabled = false; btn.textContent = "Send message";
+      cm.hidden = false; document.body.style.overflow = "hidden";
+    }
+    function close(){ cm.hidden = true; document.body.style.overflow = ""; }
+    document.querySelectorAll("[data-contact]").forEach(function(a){ a.addEventListener("click", open); });
+    cm.querySelectorAll("[data-contact-close]").forEach(function(b){ b.addEventListener("click", close); });
+    document.addEventListener("keydown", function(e){ if(e.key === "Escape" && !cm.hidden) close(); });
+    form.addEventListener("submit", function(e){
+      e.preventDefault();
+      var el = form.elements;
+      var name = el.name.value.trim(), email = el.email.value.trim(), message = el.message.value.trim();
+      err.hidden = true;
+      if(!name || !email || !message){ err.textContent = "Please fill in all fields."; err.hidden = false; return; }
+      var token = (captchaId !== null && window.turnstile) ? window.turnstile.getResponse(captchaId) : "";
+      if(!token){ err.textContent = "Please complete the verification, then try again."; err.hidden = false; return; }
+      btn.disabled = true; btn.textContent = "Sending…";
+      fetch("https://api.upvital.app/contact", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name, email: email, message: message, company: el.company.value, turnstileToken: token })
+      })
+      .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(d){ return { ok: r.ok, d: d }; }); })
+      .then(function(res){
+        resetCaptcha();
+        if(res.ok){ form.hidden = true; done.hidden = false; }
+        else { err.textContent = (res.d && res.d.error) || "Something went wrong. Please try again."; err.hidden = false; btn.disabled = false; btn.textContent = "Send message"; }
+      })
+      .catch(function(){ resetCaptcha(); err.textContent = "Network error - please try again."; err.hidden = false; btn.disabled = false; btn.textContent = "Send message"; });
+    });
+  })();
+</script>
+
+<script>
+  (function(){
+    document.documentElement.classList.add("js");
+    var rm = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+    // Gauge fill on view
+    var hero = document.getElementById("gaugeHero");
+    // Reveal on scroll
+    var items = document.querySelectorAll(".reveal");
+    if(!("IntersectionObserver" in window) || rm){
+      items.forEach(function(el){el.classList.add("in")});
+      if(hero) hero.classList.add("on");
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); }
+      });
+    },{threshold:.14,rootMargin:"0px 0px -8% 0px"});
+    items.forEach(function(el){io.observe(el)});
+    // fire the hero gauge shortly after load
+    setTimeout(function(){ if(hero) hero.classList.add("on"); }, 380);
+  })();
+</script>
+
+<script>
+  // c-2: when the sign-in service redirects here after a successful email confirmation, show the
+  // "Email confirmed" panel instead of the plain marketing page. Inert on a normal visit.
+  (function(){
+    try{
+      var hay = ((window.location.hash || "") + " " + (window.location.search || "")).toLowerCase();
+      var isRecovery = hay.indexOf("type=recovery") > -1; // password reset deep-links to the app
+      var isConfirm = !isRecovery && (
+        hay.indexOf("type=signup") > -1 ||
+        hay.indexOf("access_token=") > -1 ||
+        /[?&#]code=/.test(hay)
+      );
+      if(!isConfirm) return;
+      var ov = document.getElementById("confirmOverlay");
+      if(!ov) return;
+      ov.hidden = false;
+      document.body.style.overflow = "hidden";
+      // Strip the auth tokens from the address bar so no access_token lingers in history.
+      if(window.history && window.history.replaceState){
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+      var dismiss = ov.querySelector("[data-confirm-dismiss]");
+      if(dismiss) dismiss.addEventListener("click", function(){
+        ov.hidden = true; document.body.style.overflow = "";
+      });
+    }catch(e){ /* no-op: fall back to the normal page */ }
+  })();
+</script>
+
+</body>
+</html>

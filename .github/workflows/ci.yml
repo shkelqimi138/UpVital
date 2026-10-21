@@ -1,0 +1,54 @@
+# CI — type-checks, unit tests, and the patch-parity audit gate.
+# Two independent jobs (backend / mobile) run in parallel on every PR to main and on
+# pushes to main (so the merged result is verified, not just each PR in isolation).
+# Node is pinned to 22 to match local dev — node:test's glob patterns need Node >= 21.
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# Cancel an in-progress run when a newer commit lands on the same ref.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run build # tsc -p tsconfig.json (type-check + emit)
+      - run: npm test
+
+  mobile:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - run: npm ci # postinstall runs patch-package, applying the in-tree patches
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npx tsc --noEmit
+      - run: npm run audit:check # fails only on advisories not already patched
+      - run: npm test
